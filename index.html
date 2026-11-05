@@ -129,7 +129,7 @@ window.addEventListener('pagehide',function(){smAway=true});
 window.addEventListener('pageshow',function(e){if(e.persisted)smAway=true});
 ['pointerdown','touchend','keydown'].forEach(function(t){document.addEventListener(t,function(){smAwake();var c=getAC();if(c){try{var b=c.createBuffer(1,1,22050),s=c.createBufferSource();s.buffer=b;s.connect(c.destination);s.start(0)}catch(e){}}},{capture:true,passive:true})});
 
-var VER='1.5',VERD='Nov 5';
+var VER='1.6',VERD='Nov 5';
 var $=function(id){return document.getElementById(id)};
 function load(k,d){try{var v=localStorage.getItem(k);return v===null?d:v}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,v)}catch(e){}}
