@@ -4,3 +4,6 @@ Daily arrow memory game by smAisle. Colored arrows flash, you fill the row in or
 
 ## v1.11 (Nov 5)
 Color boxes now run up a side bar on the left by default. Settings has Color boxes: Side bar or Below. A quick tap right after a swipe now counts.
+
+## v1.12 (Nov 5)
+Side bar color boxes grow to fill the full height, so 2, 3 or 4 colors always fill the bar.

@@ -61,7 +61,7 @@ button:focus-visible{outline:3px solid var(--hi);outline-offset:1px}
 .chip{height:clamp(62px,13vh,110px);padding:0;border:2px solid #1a1814;border-radius:3px;box-shadow:3px 3px 0 var(--shadow);display:flex;align-items:center;justify-content:center}
 .chip span{font:800 11px var(--sans);letter-spacing:.1em;text-transform:uppercase;color:#fff;pointer-events:none}.chip[data-c=yellow] span{color:#1a1814}
 .chip.sel{transform:translate(2px,2px);box-shadow:0 0 0 3px var(--paper),0 0 0 6px var(--ink)}
-.ans{flex:1 1 0;min-height:0;display:flex;gap:9px}.ans .swp{flex:1 1 0;min-width:0}.rail{flex:0 0 84px;display:flex;flex-direction:column;gap:10px;min-height:0;padding:3px}.rail .chip{flex:1 1 0;height:auto;min-height:0;max-height:120px}.ans .pad{--p:min(clamp(44px,10vh,80px),calc((100vw - 156px)/3))}
+.ans{flex:1 1 0;min-height:0;display:flex;gap:9px}.ans .swp{flex:1 1 0;min-width:0}.rail{flex:0 0 84px;display:flex;flex-direction:column;gap:10px;min-height:0;padding:3px}.rail .chip{flex:1 1 0;height:auto;min-height:0}.ans .pad{--p:min(clamp(44px,10vh,80px),calc((100vw - 156px)/3))}
 .slots{display:grid;justify-content:center;gap:6px;flex:none}
 .slot{aspect-ratio:1;padding:0;background:var(--card);border:2px solid var(--ink);border-radius:3px;display:flex;align-items:center;justify-content:center;min-width:0}.slot svg{width:80%;height:80%;display:block}
 .slot.next{box-shadow:0 0 0 2px var(--paper),0 0 0 4px var(--ink)}.slot.y{border:4px solid var(--ok)}.slot.n{border:4px solid var(--red)}
@@ -131,7 +131,7 @@ window.addEventListener('pagehide',function(){smAway=true});
 window.addEventListener('pageshow',function(e){if(e.persisted)smAway=true});
 ['pointerdown','touchend','keydown'].forEach(function(t){document.addEventListener(t,function(){smAwake();var c=getAC();if(c){try{var b=c.createBuffer(1,1,22050),s=c.createBufferSource();s.buffer=b;s.connect(c.destination);s.start(0)}catch(e){}}},{capture:true,passive:true})});
 
-var VER='1.11',VERD='Nov 5';
+var VER='1.12',VERD='Nov 5';
 var $=function(id){return document.getElementById(id)};
 function load(k,d){try{var v=localStorage.getItem(k);return v===null?d:v}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,v)}catch(e){}}
