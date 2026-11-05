@@ -130,7 +130,7 @@ window.addEventListener('pagehide',function(){smAway=true});
 window.addEventListener('pageshow',function(e){if(e.persisted)smAway=true});
 ['pointerdown','touchend','keydown'].forEach(function(t){document.addEventListener(t,function(){smAwake();var c=getAC();if(c){try{var b=c.createBuffer(1,1,22050),s=c.createBufferSource();s.buffer=b;s.connect(c.destination);s.start(0)}catch(e){}}},{capture:true,passive:true})});
 
-var VER='1.8',VERD='Nov 5';
+var VER='1.9',VERD='Nov 5';
 var $=function(id){return document.getElementById(id)};
 function load(k,d){try{var v=localStorage.getItem(k);return v===null?d:v}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,v)}catch(e){}}
@@ -197,7 +197,7 @@ function paintSvg(art,pos,attr,last){var h='<svg '+attr+' viewBox="0 0 700 700" 
  if(pos)h+='<rect class="cur" x="'+(pos[0]*100+22)+'" y="'+(pos[1]*100+22)+'" width="56" height="56"/>';
  return h+'</svg>'}
 function sampleArt(){var a={},p=[1,1],w=[['R','blue'],['R','blue'],['D','red'],['D','red'],['R','yellow'],['R','yellow'],['D','green'],['L','green'],['L','blue'],['L','blue'],['D','yellow'],['D','red'],['R','red'],['R','green'],['R','green'],['U','blue'],['U','yellow']];w.forEach(function(s){p=[p[0]+DIR[s[0]][0],p[1]+DIR[s[0]][1]];a[p]=s[1]});return a}
-function newGame(demo,day){clearT();day=day||today();var pv=!demo&&preview();G={pv:pv,day:day,demo:!!demo,i:0,res:[],total:demo?2:pv?PREVIEW_N:10,phase:'idle',art:{},pos:[3,3],miss:0,rng:dayRng(day),first:!demo&&!pv&&load(dayKey(day),null)===null};if(G.first){save(dayKey(day),'0');if(day===today())save('md-live-'+day,'1')}if(!demo)checkIn('play');gameScr()}
+function newGame(demo,day){clearT();day=day||today();var pv=!demo&&preview();G={seen:load('md-seen',null)!==null,pv:pv,day:day,demo:!!demo,i:0,res:[],total:demo?2:pv?PREVIEW_N:10,phase:'idle',art:{},pos:[3,3],miss:0,rng:dayRng(day),first:!demo&&!pv&&load(dayKey(day),null)===null};if(G.first){save(dayKey(day),'0');if(day===today())save('md-live-'+day,'1')}if(!demo)checkIn('play');gameScr()}
 function pips(){return '<div class="pips" style="grid-template-columns:repeat('+G.total+',1fr)">'+Array.from({length:G.total},function(_,i){var v=G.res[i];return '<i class="'+(v===true?'y':v===false?'n':i===G.i?'c':'')+'"></i>'}).join('')+'</div>'}
 function gameScr(){
  G.r=G.demo?ruleRound(3,'none',false,G.i?['blue','red']:['ink'],pickDirs(2)):roundFor(G.i);
@@ -217,7 +217,7 @@ function flash(){
 }
 function ask(){
  G.phase='tap';G.vals=[];G.mk=null;var r=G.r;if(r.cs.indexOf(G.col)<0)G.col=r.cs[0];
- $('q').innerHTML='<span class="mini">'+FACE+'</span><span class="bs">'+(r.cs[0]==='ink'?'Swipe or tap the way I showed you, then Check.':'Pick a color, swipe or tap, then Check.')+'</span>';
+ $('q').innerHTML=G.seen?'':'<span class="mini">'+FACE+'</span><span class="bs">'+(r.cs[0]==='ink'?'Swipe or tap the way I showed you, then Check.':'Pick a color, swipe or tap, then Check.')+'</span>';
  drawAsk();
 }
 function enterDir(d){if(!G||G.phase!=='tap')return;var n=G.daily?5:G.r.steps.length,ds=G.r.ds||DK;if(G.vals.length>=n||ds.indexOf(d)<0)return;G.vals.push({c:G.col,d:d});beep(440+G.vals.length*30,60);(G.daily?drawDaily:drawAsk)()}
@@ -271,7 +271,8 @@ var SAY_W=["Right this way.", "You’re on the right path.", "That’s the way."
 var SAY_ORD=(function(){var a=SAY_W.map(function(_,i){return i}),h=20261101;for(var i=a.length-1;i>0;i--){h=(Math.imul(h,1664525)+1013904223)>>>0;var j=h%(i+1),t=a[i];a[i]=a[j];a[j]=t}return a})();
 var FACE='<svg viewBox="0 0 260 260" aria-hidden="true"><circle cx="130" cy="130" r="128" fill="#c9a961"/><g transform="translate(130 128) scale(1.62) translate(-130 -72)"><path fill="#1a1814" d="M92 96Q84 104 76 100 90 92 92 70 94 34 130 34T168 70Q170 92 184 100 176 104 168 96 160 104 150 96H110Q100 104 92 96Z"/><circle cx="130" cy="72" r="28" fill="#fffdf6" stroke="#1a1814" stroke-width="4"/><path fill="#1a1814" d="M102 68Q112 44 150 46 160 54 158 66 132 62 102 68Z"/><rect fill="#1a1814" x="108" y="24" width="44" height="20" rx="3"/><circle fill="#1a1814" cx="122" cy="74" r="4"/><circle fill="#1a1814" cx="144" cy="74" r="4"/><path fill="none" stroke="#1a1814" stroke-width="3.5" stroke-linecap="round" d="M122 88Q130 94 138 88"/></g></svg>';
 function sayBox(t){return '<div class="say"><div class="face">'+FACE+'</div><div class="bub">'+t+'</div></div>'}
-function sayStart(){if(G.demo||G.i===1)return G.i?'Now with color. Remember the color and the direction.':'Watch my arrows. Remember which way they point.';if(G.i===0)return 'Watch my arrows. Remember which way they point.';if(G.i===5)return 'Three colors now. Stay with me.';if(G.i===8)return 'All four colors. Here we go.';return 'Remember the color and the direction.'}
+var SAY_R=['Ready?','Here they come.','Eyes on me.','Watch closely.','Stay with me.','Here we go.','Follow me.'];
+function sayStart(){if(G.seen){if(G.i===5)return 'Three colors now.';if(G.i===8)return 'All four colors.';return SAY_R[(dayNo(G.day||today())+G.i)%SAY_R.length]}if(G.demo||G.i===1)return G.i?'Now with color. Remember the color and the direction.':'Watch my arrows. Remember which way they point.';if(G.i===0)return 'Watch my arrows. Remember which way they point.';if(G.i===5)return 'Three colors now. Stay with me.';if(G.i===8)return 'All four colors. Here we go.';return 'Remember the color and the direction.'}
 function sayWin(){var n=G.res.filter(Boolean).length;if(G.i===9&&n===9&&!G.miss)return 'You didn’t need me at all.';return SAY_W[SAY_ORD[((dayNo(G.day||today())*10+G.i)%100+100)%100]]}
 function sayMiss(){return SAY_M[(dayNo(G.day||today())+G.i+G.miss)%SAY_M.length]}
 function sayLost(){return SAY_L[dayNo(G.day||today())%SAY_L.length]}
@@ -299,7 +300,7 @@ function check(){
 }
 function again(){G.phase='idle';var r=G.r;$('q').innerHTML=r.rule&&!r.after?'<span class="rule">'+r.rule+'</span>':'Same arrows again';flash()}
 function done(ok){
- G.phase='done';G.res[G.i]=ok;if(G.first)save(dayKey(G.day),String(G.res.filter(Boolean).length));var pe=document.querySelectorAll('.pips i')[G.i];if(pe)pe.className=ok?'y':'n';
+ G.phase='done';G.res[G.i]=ok;if(!G.demo&&G.i>=2)save('md-seen','1');if(G.first)save(dayKey(G.day),String(G.res.filter(Boolean).length));var pe=document.querySelectorAll('.pips i')[G.i];if(pe)pe.className=ok?'y':'n';
  if(ok){beep(740,90);later(function(){beep(988,140)},90);$('q').innerHTML='<span class="y">Round cleared</span>'}
  var last=G.i===G.total-1||G.over;
  $('tray').insertAdjacentHTML('beforeend','<button class="go full" id="next" style="visibility:hidden">'+(last?(G.demo?'Done':G.pv?'See how you did':'See your score'):'Next round')+'</button>');$('next').onclick=function(){if(last){G.demo?startScr():G.pv?lockScr():endScr()}else{G.i++;gameScr()}};later(function(){if($('next'))$('next').style.visibility='visible'},ok?500:1500);
