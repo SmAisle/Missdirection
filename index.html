@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="Miss Direction">
 <meta property="og:title" content="Miss Direction">
 <meta property="og:description" content="Watch the arrows. Fill the row. 10 rounds a day.">
-<meta property="og:image" content="https://smaisle.app/missdirection/icon-512.png">
+<meta property="og:image" content="https://smaisle.app/Missdirection/icon-512.png">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#f4efe1">
 <script>(function(){try{var k=localStorage.getItem('smaisle-dark')||'off',d=k==='on'||(k==='auto'&&matchMedia('(prefers-color-scheme: dark)').matches);if(d)document.documentElement.setAttribute('data-mode','navy')}catch(e){}})()</script>
@@ -129,7 +129,7 @@ window.addEventListener('pagehide',function(){smAway=true});
 window.addEventListener('pageshow',function(e){if(e.persisted)smAway=true});
 ['pointerdown','touchend','keydown'].forEach(function(t){document.addEventListener(t,function(){smAwake();var c=getAC();if(c){try{var b=c.createBuffer(1,1,22050),s=c.createBufferSource();s.buffer=b;s.connect(c.destination);s.start(0)}catch(e){}}},{capture:true,passive:true})});
 
-var VER='1.6',VERD='Nov 5';
+var VER='1.7',VERD='Nov 5';
 var $=function(id){return document.getElementById(id)};
 function load(k,d){try{var v=localStorage.getItem(k);return v===null?d:v}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,v)}catch(e){}}
@@ -305,7 +305,7 @@ function done(ok){
 function endScr(){
  clearT();var n=G.res.filter(Boolean).length,lock=+load(dayKey(G.day),n),isT=G.day===today();if(G.first){checkIn('done');if(isT)markDone()}
  var word=lock===10?'Perfect.':lock>=8?'Sharp.':lock>=5?'Solid.':'Keep at it.',rs=[];for(var i=0;i<10;i++)rs.push(G.res[i]);
- var share='Miss Direction No. '+dayNo(G.day)+': '+lock+'/10'+(G.first?'\n'+rs.map(function(v){return v?'🟩':v===false?'🟥':'⬜'}).join(''):'')+'\nsmaisle.app/missdirection';
+ var share='Miss Direction No. '+dayNo(G.day)+': '+lock+'/10'+(G.first?'\n'+rs.map(function(v){return v?'🟩':v===false?'🟥':'⬜'}).join(''):'')+'\nsmaisle.app/Missdirection';
  $('app').innerHTML='<h1 class="mast">'+word+'</h1><div class="prev">'+paintSvg(G.art,null,'class="pvm"')+'</div><p class="endbig">'+lock+' of 10</p><div class="grid">'+rs.map(function(v){return '<i class="'+(v?'y':v===false?'n':'')+'"></i>'}).join('')+'</div><div class="srs"><div class="sr"><span>'+(isT?'Today\'s score':'No. '+dayNo(G.day)+' score')+'</span><b>'+lock+' · Locked</b></div>'+(G.first?'':'<div class="sr"><span>This replay</span><b>'+n+'</b></div>')+'<div class="sr"><span>Streak</span><b>'+streak()+'</b></div></div><button class="go" id="agn">Replay</button><div class="row"><button class="sec" id="sh">Share</button><button class="sec" id="home">Menu</button></div><a class="dgo" href="https://smaisle.app/daily/">‹ smAisle Daily</a>'+moreGames()+'<p class="ver">v'+VER+' · '+VERD+'</p>';
  $('agn').onclick=function(){newGame(false,G.day)};$('home').onclick=startScr;
  $('sh').onclick=function(){var w=navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(share):Promise.reject();w.then(function(){toast('Copied. Paste it in a text.')},function(){toast(share.split('\n')[0])})};
