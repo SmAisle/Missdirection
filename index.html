@@ -49,7 +49,7 @@ button:focus-visible{outline:3px solid var(--hi);outline-offset:1px}
 #pc{transition:transform .13s ease-out}
 .q{flex:none;margin:0;min-height:30px;display:flex;align-items:center;justify-content:center;text-align:center;font:800 15px/1.2 var(--sans)}
 .q .n{color:var(--red)}.q .y{color:var(--ok)}.rule{background:var(--hi);color:#1a1814;padding:3px 9px;border:2px solid #1a1814;font:900 15px var(--sans)}
-.tray{flex:1 1 0;min-height:0;display:flex;flex-direction:column;gap:10px}.go.full{flex:0 0 auto;height:clamp(72px,14vh,110px)}.tray>.go.full:only-child{margin:auto 0}
+.tray{flex:1 1 0;min-height:0;display:flex;flex-direction:column;gap:10px}.go.full{flex:0 0 auto;height:clamp(72px,14vh,110px)}.tray>.go.full:only-child{margin-top:auto}
 .show{flex:1 1 0;min-height:0;display:flex;align-items:center;justify-content:center;background:var(--card);border:3px double var(--ink);box-shadow:3px 3px 0 var(--shadow)}.show svg{height:86%;aspect-ratio:1;display:block}
 .tiles{height:100%;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(4,1fr);gap:4px}
 .tile{padding:0;background:var(--card);border:2px solid var(--edge);border-radius:3px;display:flex;align-items:center;justify-content:center;min-height:0;min-width:0}.tile svg{height:82%;aspect-ratio:1;display:block}
@@ -73,8 +73,8 @@ button:focus-visible{outline:3px solid var(--hi);outline-offset:1px}
 .dgo{flex:none;display:flex;align-items:center;justify-content:center;min-height:44px;background:#ffe27a;color:#1a1814;border:2px solid #1a1814;border-radius:3px;box-shadow:3px 3px 0 var(--shadow);font:800 14px var(--sans);text-decoration:none}
 .more{flex:none;touch-action:pan-x}.more .mh{font:800 11px var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--ink2);margin-bottom:4px}.mrow{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 4px;scrollbar-width:none}.mrow::-webkit-scrollbar{display:none}.mrow a{flex:0 0 54px;text-align:center;text-decoration:none;color:var(--ink);font:700 9px/1.15 var(--sans)}.mrow img{display:block;width:40px;height:40px;margin:0 auto 2px;border:1.5px solid var(--line);border-radius:9px;background:var(--card)}
 @media (max-height:720px){.more{display:none}}
-.say{flex:1 1 0;min-height:0;display:flex;align-items:center;justify-content:center;gap:10px}.face{flex:none;width:clamp(60px,11vh,92px);height:clamp(60px,11vh,92px);filter:drop-shadow(3px 3px 0 var(--shadow))}.face svg{display:block;width:100%;height:100%}
-.bub{position:relative;max-width:240px;background:var(--card);border:2px solid var(--ink);border-radius:3px;box-shadow:3px 3px 0 var(--shadow);padding:9px 12px;font:italic 400 15px/1.35 var(--body)}.bub::before{content:"";position:absolute;left:-11px;top:50%;margin-top:-8px;border:8px solid transparent;border-right:11px solid var(--ink);border-left:0}.bub::after{content:"";position:absolute;left:-8px;top:50%;margin-top:-6px;border:6px solid transparent;border-right:9px solid var(--card);border-left:0}
+.say{flex:1 1 0;min-height:0;display:flex;align-items:center;justify-content:center;gap:10px}.face{flex:none;width:clamp(78px,14vh,124px);height:clamp(78px,14vh,124px);filter:drop-shadow(3px 3px 0 var(--shadow))}.face svg{display:block;width:100%;height:100%}
+.bub{position:relative;min-width:0;max-width:230px;background:var(--card);border:2px solid var(--ink);border-radius:3px;box-shadow:3px 3px 0 var(--shadow);padding:10px 12px;font:italic 400 16px/1.35 var(--body)}.bub::before{content:"";position:absolute;left:-11px;top:50%;margin-top:-8px;border:8px solid transparent;border-right:11px solid var(--ink);border-left:0}.bub::after{content:"";position:absolute;left:-8px;top:50%;margin-top:-6px;border:6px solid transparent;border-right:9px solid var(--card);border-left:0}
 .acts{display:flex;gap:8px;flex:none}.acts .sec{flex:1}.acts .go{flex:2}.go:disabled{opacity:.4}
 .show svg{width:min(92%,340px);height:auto}.show svg,.hero svg{filter:drop-shadow(5px 5px 0 var(--shadow))}.show .ash,.hero .ash{display:none}.sl{fill:#fffdf6;stroke:#1a1814;stroke-width:4;stroke-linejoin:round;stroke-linecap:round}.sk{fill:#1a1814}.sa{fill:none;stroke:#1a1814;stroke-width:18;stroke-linecap:round;stroke-linejoin:round}.sb{fill:none;stroke:#fffdf6;stroke-width:10;stroke-linecap:round;stroke-linejoin:round}.sn{fill:none;stroke:#1a1814;stroke-width:3.5;stroke-linecap:round}.sd{fill:none}html[data-mode=navy] .sd{fill:#c9a961}
 .tile:active{transform:translate(1px,1px)}.tile.ok{background:var(--tileok)}.tile.bad{background:var(--tilebad)}.tile.win{box-shadow:0 0 0 3px #ffe27a,0 0 0 5px #1a1814;z-index:1;position:relative}
@@ -129,7 +129,7 @@ window.addEventListener('pagehide',function(){smAway=true});
 window.addEventListener('pageshow',function(e){if(e.persisted)smAway=true});
 ['pointerdown','touchend','keydown'].forEach(function(t){document.addEventListener(t,function(){smAwake();var c=getAC();if(c){try{var b=c.createBuffer(1,1,22050),s=c.createBufferSource();s.buffer=b;s.connect(c.destination);s.start(0)}catch(e){}}},{capture:true,passive:true})});
 
-var VER='1.4',VERD='Nov 5';
+var VER='1.5',VERD='Nov 5';
 var $=function(id){return document.getElementById(id)};
 function load(k,d){try{var v=localStorage.getItem(k);return v===null?d:v}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,v)}catch(e){}}
@@ -300,7 +300,7 @@ function done(ok){
  G.phase='done';G.res[G.i]=ok;if(G.first)save(dayKey(G.day),String(G.res.filter(Boolean).length));var pe=document.querySelectorAll('.pips i')[G.i];if(pe)pe.className=ok?'y':'n';
  if(ok){beep(740,90);later(function(){beep(988,140)},90);$('q').innerHTML='<span class="y">Round cleared</span>'}
  var last=G.i===G.total-1||G.over;
- later(function(){$('tray').insertAdjacentHTML('beforeend','<button class="go full" id="next">'+(last?(G.demo?'Done':G.pv?'See how you did':'See your score'):'Next round')+'</button>');$('next').onclick=function(){if(last){G.demo?startScr():G.pv?lockScr():endScr()}else{G.i++;gameScr()}}},ok?500:1500);
+ $('tray').insertAdjacentHTML('beforeend','<button class="go full" id="next" style="visibility:hidden">'+(last?(G.demo?'Done':G.pv?'See how you did':'See your score'):'Next round')+'</button>');$('next').onclick=function(){if(last){G.demo?startScr():G.pv?lockScr():endScr()}else{G.i++;gameScr()}};later(function(){if($('next'))$('next').style.visibility='visible'},ok?500:1500);
 }
 function endScr(){
  clearT();var n=G.res.filter(Boolean).length,lock=+load(dayKey(G.day),n),isT=G.day===today();if(G.first){checkIn('done');if(isT)markDone()}
