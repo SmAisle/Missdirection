@@ -10,3 +10,6 @@ Side bar color boxes grow to fill the full height, so 2, 3 or 4 colors always fi
 
 ## v1.13 (Nov 5)
 Color boxes can sit on the left, right or below (Settings). New players are asked once, on first Play, which hand they swipe with: Right puts the boxes on the left, Left puts them on the right. Existing players stay on the left.
+
+## v1.14 (Nov 5)
+Keep playing: after 3 wrong, or after quitting, a player picks up at the round they stopped on with a fresh 3 wrong. The first score stays locked. After clearing round 10, Replay starts over at round 1. Progress is on the device under md-at-(date), and it works for Archive days too.
