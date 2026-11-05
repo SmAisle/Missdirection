@@ -75,6 +75,7 @@ button:focus-visible{outline:3px solid var(--hi);outline-offset:1px}
 @media (max-height:720px){.more{display:none}}
 .say{flex:1 1 0;min-height:0;display:flex;align-items:center;justify-content:center;gap:10px}.face{flex:none;width:clamp(78px,14vh,124px);height:clamp(78px,14vh,124px);filter:drop-shadow(3px 3px 0 var(--shadow))}.face svg{display:block;width:100%;height:100%}
 .bub{position:relative;min-width:0;max-width:230px;background:var(--card);border:2px solid var(--ink);border-radius:3px;box-shadow:3px 3px 0 var(--shadow);padding:10px 12px;font:italic 400 16px/1.35 var(--body)}.bub::before{content:"";position:absolute;left:-11px;top:50%;margin-top:-8px;border:8px solid transparent;border-right:11px solid var(--ink);border-left:0}.bub::after{content:"";position:absolute;left:-8px;top:50%;margin-top:-6px;border:6px solid transparent;border-right:9px solid var(--card);border-left:0}
+.q:has(.mini){gap:6px}.mini{flex:none;width:34px;height:34px;display:block}.mini svg{display:block;width:100%;height:100%}.bs{min-width:0;background:var(--card);border:2px solid var(--ink);border-radius:3px;padding:3px 8px;font:italic 400 13.5px/1.25 var(--body);text-align:left}
 .acts{display:flex;gap:8px;flex:none}.acts .sec{flex:1}.acts .go{flex:2}.go:disabled{opacity:.4}
 .show svg{width:min(92%,340px);height:auto}.show svg,.hero svg{filter:drop-shadow(5px 5px 0 var(--shadow))}.show .ash,.hero .ash{display:none}.sl{fill:#fffdf6;stroke:#1a1814;stroke-width:4;stroke-linejoin:round;stroke-linecap:round}.sk{fill:#1a1814}.sa{fill:none;stroke:#1a1814;stroke-width:18;stroke-linecap:round;stroke-linejoin:round}.sb{fill:none;stroke:#fffdf6;stroke-width:10;stroke-linecap:round;stroke-linejoin:round}.sn{fill:none;stroke:#1a1814;stroke-width:3.5;stroke-linecap:round}.sd{fill:none}html[data-mode=navy] .sd{fill:#c9a961}
 .tile:active{transform:translate(1px,1px)}.tile.ok{background:var(--tileok)}.tile.bad{background:var(--tilebad)}.tile.win{box-shadow:0 0 0 3px #ffe27a,0 0 0 5px #1a1814;z-index:1;position:relative}
@@ -129,7 +130,7 @@ window.addEventListener('pagehide',function(){smAway=true});
 window.addEventListener('pageshow',function(e){if(e.persisted)smAway=true});
 ['pointerdown','touchend','keydown'].forEach(function(t){document.addEventListener(t,function(){smAwake();var c=getAC();if(c){try{var b=c.createBuffer(1,1,22050),s=c.createBufferSource();s.buffer=b;s.connect(c.destination);s.start(0)}catch(e){}}},{capture:true,passive:true})});
 
-var VER='1.7',VERD='Nov 5';
+var VER='1.8',VERD='Nov 5';
 var $=function(id){return document.getElementById(id)};
 function load(k,d){try{var v=localStorage.getItem(k);return v===null?d:v}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,v)}catch(e){}}
@@ -202,8 +203,8 @@ function gameScr(){
  G.r=G.demo?ruleRound(3,'none',false,G.i?['blue','red']:['ink'],pickDirs(2)):roundFor(G.i);
  G.retried=false;G.phase='idle';G.vals=[];G.mk=null;G.col=G.col||'blue';
  var score=G.res.filter(Boolean).length,r=G.r,rl=r.rule&&!r.after;
- $('app').innerHTML='<div class="bar"><b>'+(G.demo?'Demo':G.day===today()?'Miss Direction':'No. '+dayNo(G.day))+'</b><span>Round '+(G.i+1)+' of '+G.total+' · '+G.miss+' of 3 wrong'+(G.pv?' · Preview':G.demo||G.first?'':' · Replay')+'</span></div>'+pips()+'<p class="q" id="q"></p><div class="tray" id="tray"><button class="go full" id="show">Flash '+r.seq.length+' arrows</button></div>';
- $('q').innerHTML=rl?'<span class="rule">'+r.rule+'</span>':(r.after?'The rule comes after the flash':'Remember color and direction');
+ $('app').innerHTML='<div class="bar"><b>'+(G.demo?'Demo':G.day===today()?'Miss Direction':'No. '+dayNo(G.day))+'</b><span>Round '+(G.i+1)+' of '+G.total+' · '+G.miss+' of 3 wrong'+(G.pv?' · Preview':G.demo||G.first?'':' · Replay')+'</span></div>'+pips()+'<p class="q" id="q"></p><div class="tray" id="tray">'+sayBox(sayStart())+'<button class="go full" id="show">Flash '+r.seq.length+' arrows</button></div>';
+ $('q').innerHTML='';
  $('show').onclick=flash;
 }
 function flash(){
@@ -216,7 +217,7 @@ function flash(){
 }
 function ask(){
  G.phase='tap';G.vals=[];G.mk=null;var r=G.r;if(r.cs.indexOf(G.col)<0)G.col=r.cs[0];
- $('q').innerHTML=r.rule?'<span class="rule">'+r.rule+'</span>':'Swipe or tap, then Check';
+ $('q').innerHTML='<span class="mini">'+FACE+'</span><span class="bs">'+(r.cs[0]==='ink'?'Swipe or tap the way I showed you, then Check.':'Pick a color, swipe or tap, then Check.')+'</span>';
  drawAsk();
 }
 function enterDir(d){if(!G||G.phase!=='tap')return;var n=G.daily?5:G.r.steps.length,ds=G.r.ds||DK;if(G.vals.length>=n||ds.indexOf(d)<0)return;G.vals.push({c:G.col,d:d});beep(440+G.vals.length*30,60);(G.daily?drawDaily:drawAsk)()}
@@ -270,6 +271,7 @@ var SAY_W=["Right this way.", "You’re on the right path.", "That’s the way."
 var SAY_ORD=(function(){var a=SAY_W.map(function(_,i){return i}),h=20261101;for(var i=a.length-1;i>0;i--){h=(Math.imul(h,1664525)+1013904223)>>>0;var j=h%(i+1),t=a[i];a[i]=a[j];a[j]=t}return a})();
 var FACE='<svg viewBox="0 0 260 260" aria-hidden="true"><circle cx="130" cy="130" r="128" fill="#c9a961"/><g transform="translate(130 128) scale(1.62) translate(-130 -72)"><path fill="#1a1814" d="M92 96Q84 104 76 100 90 92 92 70 94 34 130 34T168 70Q170 92 184 100 176 104 168 96 160 104 150 96H110Q100 104 92 96Z"/><circle cx="130" cy="72" r="28" fill="#fffdf6" stroke="#1a1814" stroke-width="4"/><path fill="#1a1814" d="M102 68Q112 44 150 46 160 54 158 66 132 62 102 68Z"/><rect fill="#1a1814" x="108" y="24" width="44" height="20" rx="3"/><circle fill="#1a1814" cx="122" cy="74" r="4"/><circle fill="#1a1814" cx="144" cy="74" r="4"/><path fill="none" stroke="#1a1814" stroke-width="3.5" stroke-linecap="round" d="M122 88Q130 94 138 88"/></g></svg>';
 function sayBox(t){return '<div class="say"><div class="face">'+FACE+'</div><div class="bub">'+t+'</div></div>'}
+function sayStart(){if(G.demo||G.i===1)return G.i?'Now with color. Remember the color and the direction.':'Watch my arrows. Remember which way they point.';if(G.i===0)return 'Watch my arrows. Remember which way they point.';if(G.i===5)return 'Three colors now. Stay with me.';if(G.i===8)return 'All four colors. Here we go.';return 'Remember the color and the direction.'}
 function sayWin(){var n=G.res.filter(Boolean).length;if(G.i===9&&n===9&&!G.miss)return 'You didn’t need me at all.';return SAY_W[SAY_ORD[((dayNo(G.day||today())*10+G.i)%100+100)%100]]}
 function sayMiss(){return SAY_M[(dayNo(G.day||today())+G.i+G.miss)%SAY_M.length]}
 function sayLost(){return SAY_L[dayNo(G.day||today())%SAY_L.length]}
