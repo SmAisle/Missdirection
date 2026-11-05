@@ -7,3 +7,6 @@ Color boxes now run up a side bar on the left by default. Settings has Color box
 
 ## v1.12 (Nov 5)
 Side bar color boxes grow to fill the full height, so 2, 3 or 4 colors always fill the bar.
+
+## v1.13 (Nov 5)
+Color boxes can sit on the left, right or below (Settings). New players are asked once, on first Play, which hand they swipe with: Right puts the boxes on the left, Left puts them on the right. Existing players stay on the left.
