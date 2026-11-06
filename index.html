@@ -133,7 +133,7 @@ window.addEventListener('pagehide',function(){smAway=true});
 window.addEventListener('pageshow',function(e){if(e.persisted)smAway=true});
 ['pointerdown','touchend','keydown'].forEach(function(t){document.addEventListener(t,function(){smAwake();var c=getAC();if(c){try{var b=c.createBuffer(1,1,22050),s=c.createBufferSource();s.buffer=b;s.connect(c.destination);s.start(0)}catch(e){}}},{capture:true,passive:true})});
 
-var VER='1.16',VERD='Nov 6';
+var VER='1.17',VERD='Nov 6';
 var $=function(id){return document.getElementById(id)};
 function load(k,d){try{var v=localStorage.getItem(k);return v===null?d:v}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,v)}catch(e){}}
@@ -339,5 +339,9 @@ startScr();if(!preview())checkIn('open');
 
 </script>
 
+<style>.pvGhost{position:fixed;inset:0;display:none;align-items:center;justify-content:center;pointer-events:none;z-index:40;overflow:hidden;color:inherit}.pvGhost.on{display:flex}.pvGhost span{font:900 25vw/1 system-ui,-apple-system,sans-serif;letter-spacing:.05em;opacity:.08;transform:rotate(-28deg);white-space:nowrap;user-select:none;-webkit-user-select:none}@media(min-width:520px){.pvGhost span{font-size:130px}}</style>
+<!-- Ghosted PREVIEW across the screen while a free player is in the preview (Jeff, Nov 6), so it's clear it isn't the full game. -->
+<div class="pvGhost" aria-hidden="true"><span>PREVIEW</span></div>
+<script>(function(){var g=document.querySelector('.pvGhost');function t(){try{g.classList.toggle('on',!!(preview()))}catch(e){}}t();setInterval(t,700)})()</script>
 </body>
 </html>
