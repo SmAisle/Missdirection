@@ -16,3 +16,6 @@ Keep playing: after 3 wrong, or after quitting, a player picks up at the round t
 
 ## v1.15 (Nov 6)
 From Nov 7, rounds with 2 directions can use any two directions, not just an opposite pair, so round 1 has 12 versions instead of 4. Earlier days and the Archive keep their arrows.
+
+## v1.16 (Nov 6)
+The free preview (?preview=1, or smAisle Daily without Plus) is always the game of Nov 6, 2026, every day, instead of today's. Still the first 3 rounds, fresh every time, and nothing is saved: no progress, score, streak, Archive, smaisle_done or check-ins. The cover hides the Archive. The end screen says "Play a new one every day with smAisle Daily Plus" with Get smAisle Daily Plus, the yellow ‹ smAisle Daily button and Play the preview again. If Plus arrives mid-preview the page reloads into today's full game. The website without ?preview=1 and Plus players are unchanged.

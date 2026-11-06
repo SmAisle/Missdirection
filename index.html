@@ -40,6 +40,7 @@ button:focus-visible{outline:3px solid var(--hi);outline-offset:1px}
 .seg{display:flex;flex:none;border:2px solid var(--ink);border-radius:3px;overflow:hidden}
 .seg button{flex:1 1 0;height:38px;border:0;background:var(--card);font:800 12px var(--sans);letter-spacing:.06em;text-transform:uppercase;padding:0 4px}
 .seg button+button{border-left:2px solid var(--ink)}.seg button.on{background:var(--btn);color:var(--btnink)}
+.pvt{margin:0;text-align:center;font:800 12px var(--sans);letter-spacing:.04em;text-transform:uppercase;color:var(--fade);flex:none}
 .ver{margin:0;text-align:center;font:600 11px var(--sans);color:var(--fade);flex:none}
 .bar{flex:none;display:flex;align-items:center;justify-content:space-between;gap:8px;border-bottom:3px double var(--ink);padding-bottom:5px}
 .bar b{font:900 19px/1.1 var(--head);white-space:nowrap}.bar span{font:700 12px var(--sans);color:var(--ink2);font-variant-numeric:tabular-nums;white-space:nowrap}
@@ -132,7 +133,7 @@ window.addEventListener('pagehide',function(){smAway=true});
 window.addEventListener('pageshow',function(e){if(e.persisted)smAway=true});
 ['pointerdown','touchend','keydown'].forEach(function(t){document.addEventListener(t,function(){smAwake();var c=getAC();if(c){try{var b=c.createBuffer(1,1,22050),s=c.createBufferSource();s.buffer=b;s.connect(c.destination);s.start(0)}catch(e){}}},{capture:true,passive:true})});
 
-var VER='1.15',VERD='Nov 5';
+var VER='1.16',VERD='Nov 6';
 var $=function(id){return document.getElementById(id)};
 function load(k,d){try{var v=localStorage.getItem(k);return v===null?d:v}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,v)}catch(e){}}
@@ -166,9 +167,16 @@ function dayNo(d){return Math.round((new Date(d+'T12:00:00')-new Date(START+'T12
 function dayKey(d){return 'md-day-'+(d||today())}
 function streak(){var d=today(),n=0,k=function(x){return load('md-live-'+x,null)!==null};if(!k(d))d=dayAdd(d,-1);while(k(d)){n++;d=dayAdd(d,-1)}return n}
 var DBAR='<a id="dailyBar" href="https://smaisle.app/daily/">‹ smAisle Daily</a>',PREVIEW_N=3;
-/* Plus game in smAisle Daily: preview is ?preview=1, or the app without Plus. First 3 rounds, nothing saved. */
-function preview(){return /[?&]preview=1\b/.test(location.search)||(!!window.DG_APP&&!window.DG_APP.plus)}
-function lockScr(){clearT();var n=G.res.filter(Boolean).length;$('app').innerHTML='<h1 class="mast">Free preview</h1><div class="grow"></div><p class="endbig">🔒</p><p class="q">Unlock the rest with smAisle Daily Plus</p><p class="tag" style="text-align:center">You cleared '+n+' of the first '+PREVIEW_N+' rounds. Plus has all 10 rounds every day, and the Archive.</p><div class="grow"></div><a class="dgo" href="https://smaisle.app/daily/">‹ smAisle Daily</a><button class="sec" id="home">Menu</button>'+moreGames()+'<p class="ver">v'+VER+' · '+VERD+'</p>';$('home').onclick=startScr}
+/* Plus game in smAisle Daily: preview is ?preview=1 (unless the app says Plus), or the app without Plus. First 3 rounds, nothing saved.
+   The preview is always the game of Nov 6, 2026 (PV_DAY), whatever the date, and it plays fresh every time. */
+var PV_DAY='2026-11-06';
+function preview(){return /[?&]preview=1\b/.test(location.search)&&!(window.DG_APP&&window.DG_APP.plus)||(!!window.DG_APP&&!window.DG_APP.plus)}
+function toApp(m){try{window.webkit&&webkit.messageHandlers&&webkit.messageHandlers.dg&&webkit.messageHandlers.dg.postMessage(m)}catch(e){}}
+function lockScr(){clearT();var n=G.res.filter(Boolean).length;$('app').innerHTML='<h1 class="mast">Free preview</h1><div class="grow"></div><p class="endbig">🔒</p><p class="q">Play a new one every day with smAisle Daily Plus</p><p class="tag" style="text-align:center">You cleared '+n+' of '+PREVIEW_N+' preview rounds. Plus has all 10 rounds every day, and the Archive.</p><div class="grow"></div><button class="go" id="buy">Get smAisle Daily Plus</button><a class="dgo" href="https://smaisle.app/daily/" id="hub">‹ smAisle Daily</a><button class="sec" id="pva">Play the preview again</button>'+moreGames()+'<p class="ver">v'+VER+' · '+VERD+'</p>';
+ $('pva').onclick=function(){newGame(false)};$('buy').onclick=function(){if(window.DG_APP)toApp({cmd:'plus'});else location.href='https://smaisle.app/daily/#plus'};$('hub').onclick=function(e){if(window.DG_APP){e.preventDefault();toApp({cmd:'home'})}}}
+/* The app tells the page when Plus changes: dgNative('store',{plus}). Plus mid-preview: reload into today's full game.    The app sets DG_APP.plus before it calls, so remember whether the page opened as a preview. */
+var PV_LOAD=preview();
+if(!window.dgNative)window.dgNative=function(cmd,d){if(cmd!=='store'||!window.DG_APP)return;window.DG_APP.plus=!!(d&&d.plus);if((PV_LOAD||G&&G.pv)&&!preview()){clearT();var u=location.pathname+location.search.replace(/[?&]preview=1\b/,'').replace(/^&/,'?')+location.hash;try{location.replace(u)}catch(e){location.reload()}}};
 function markDone(){try{var day=today(),s=lsG('smaisle_done',{})||{};s[day]=s[day]||[];if(s[day].indexOf('md')<0)s[day].push('md');var k=Object.keys(s).sort();while(k.length>60)delete s[k.shift()];lsP('smaisle_done',s)}catch(e){}}
 function inviteCode(){try{var c=localStorage.getItem('smaisle_code');if(c)return String(c).slice(0,40);var m=JSON.parse(localStorage.getItem('smaisle_codes')||'null');if(m&&typeof m==='object'){var a=['daily15','abcdeal','gramble','all'];for(var i=0;i<a.length;i++)if(m[a[i]])return String(m[a[i]]).slice(0,40);var v=Object.values(m).find(Boolean);if(v)return String(v).slice(0,40)}}catch(e){}return 'unknown'}
 var MORE=[['The Daily 15','DailyGrid/','daily-15'],['A, B, C, Deal','abcdeal/','abc-deal'],['Gramble','gramble/','gramble'],['Jexicon','Jexicon/','jexicon'],['Capital Ship','CapitalShip/','capital-ship'],['Straight Down','StraightDown/','straight-down'],['Shuffle Blast','ShuffleBlast/','shuffle-blast'],['Bullseye Roulette','BullseyeRoulette/','bullseye-roulette'],['Connello','Connello/','connello']];
@@ -183,8 +191,8 @@ var G=null,TM=[];function later(f,ms){TM.push(setTimeout(f,ms))}function clearT(
 
 function startScr(){
  clearT();G=null;
- $('app').innerHTML=DBAR+'<h1 class="mast">Miss Direction</h1><p class="tag">She gives the directions. You follow them. 10 rounds a day.</p><div class="prev hero">'+missD()+'</div><button class="go" id="play">'+(preview()?'Play the free preview':load(dayKey(),null)===null?'Play today\'s 10 rounds':(getAt()?'Keep playing':'Replay')+' · Today locked at '+load(dayKey(),'0')+' of 10')+'</button><div class="row"><button class="sec" id="arc">Archive</button><button class="sec" id="how">How to Play</button></div><button class="sec" id="set">Settings</button><p class="ver">Miss Direction · v'+VER+' · '+VERD+' · smAisle</p>';
- $('play').onclick=function(){newGame(false)};$('arc').onclick=function(){if(preview())toast('The Archive comes with Plus');else archive()};$('how').onclick=howPop;$('set').onclick=setPop;
+ $('app').innerHTML=DBAR+'<h1 class="mast">Miss Direction</h1><p class="tag">She gives the directions. You follow them. 10 rounds a day.</p><div class="prev hero">'+missD()+'</div>'+(preview()?'<p class="pvt">Free preview · 3 rounds</p>':'')+'<button class="go" id="play">'+(preview()?'Play the free preview':load(dayKey(),null)===null?'Play today\'s 10 rounds':(getAt()?'Keep playing':'Replay')+' · Today locked at '+load(dayKey(),'0')+' of 10')+'</button><div class="row">'+(preview()?'':'<button class="sec" id="arc">Archive</button>')+'<button class="sec" id="how">How to Play</button></div><button class="sec" id="set">Settings</button><p class="ver">Miss Direction · v'+VER+' · '+VERD+' · smAisle</p>';
+ $('play').onclick=function(){newGame(false)};if($('arc'))$('arc').onclick=archive;$('how').onclick=howPop;$('set').onclick=setPop;
 }
 function howPop(){pop('<h2>How to Play</h2><ol class="how"><li><b>Watch.</b> Colored arrows flash one at a time.</li><li><b>Fill the row.</b> Pick a color, then swipe anywhere or tap an arrow. Tap Check when the row is full. Round 1 has no colors, and more come in as you go.</li><li><b>3 wrong and done.</b> A wrong Check gives you one more look at the same arrows. The third wrong Check ends your day.</li><li><b>One score a day.</b> Everyone gets the same 10 rounds. Your first play locks your score. Keep playing from where you stopped, or play old days in the Archive.</li></ol><button class="go" id="demo">Play the demo</button><button class="sec" id="cl">Close</button><p class="ver">v'+VER+' · '+VERD+'</p>');$('demo').onclick=function(){closePop();demo()};$('cl').onclick=closePop}
 function setPop(){var d=load('smaisle-dark','off'),s=load('smaisle-sound','on');pop('<h2>Settings</h2><p class="lab">Color boxes</p><div class="seg" id="cb">'+[['side','Left'],['right','Right'],['below','Below']].map(function(x){return '<button data-v="'+x[0]+'" class="'+(x[0]===load('md-colors','side')?'on':'')+'">'+x[1]+'</button>'}).join('')+'</div><p class="lab">Dark mode</p><div class="seg" id="dk">'+[['off','Off'],['on','On'],['auto','Match phone']].map(function(x){return '<button data-v="'+x[0]+'" class="'+(d===x[0]?'on':'')+'">'+x[1]+'</button>'}).join('')+'</div><p class="note">On uses Navy. Match phone switches with your phone.</p><p class="lab">Sound</p><div class="seg" id="snd">'+[['on','On'],['off','Off']].map(function(x){return '<button data-v="'+x[0]+'" class="'+(s===x[0]?'on':'')+'">'+x[1]+'</button>'}).join('')+'</div><button class="sec" id="cl">Close</button>');document.querySelectorAll('#dk button').forEach(function(b){b.onclick=function(){save('smaisle-dark',b.dataset.v);applyDark();setPop()}});document.querySelectorAll('#cb button').forEach(function(b){b.onclick=function(){save('md-colors',b.dataset.v);setPop()}});document.querySelectorAll('#snd button').forEach(function(b){b.onclick=function(){save('smaisle-sound',b.dataset.v);setPop()}});$('cl').onclick=closePop}
@@ -208,13 +216,13 @@ function getAt(d){try{var a=JSON.parse(load(atKey(d),'null'));return a&&a.i>0&&a
 function setAt(i,res){save(atKey(G.day),JSON.stringify({i:i,res:res.slice(0,i)}))}
 /* Keep playing: rounds come from the day's numbers in order, so walk through the earlier rounds to reach the same arrows and picture. The score stays locked. */
 function resume(a){G.i=a.i;G.res=a.res.slice();for(var j=0;j<a.i;j++){var r=roundFor(j);if(a.res[j]){var p=G.pos;r.steps.forEach(function(s){p=[(p[0]+DIR[s.d][0]+N)%N,(p[1]+DIR[s.d][1]+N)%N];G.art[p]=s.c});G.pos=p}}}
-function newGame(demo,day){if(!demo&&load('md-colors',null)===null&&!hasPlayed()){askHand(function(){newGame(demo,day)});return}clearT();day=day||today();var pv=!demo&&preview();G={seen:load('md-seen',null)!==null,pv:pv,day:day,demo:!!demo,i:0,res:[],total:demo?2:pv?PREVIEW_N:10,phase:'idle',art:{},pos:[3,3],miss:0,rng:dayRng(day),first:!demo&&!pv&&load(dayKey(day),null)===null};if(G.first){save(dayKey(day),'0');if(day===today())save('md-live-'+day,'1')}if(!demo&&!pv&&!G.first){var at=getAt(day);if(at)resume(at);else save(atKey(day),'null')}if(!demo)checkIn('play');gameScr()}
+function newGame(demo,day){if(!demo&&load('md-colors',null)===null&&!hasPlayed()){askHand(function(){newGame(demo,day)});return}clearT();var pv=!demo&&preview();day=pv?PV_DAY:day||today();G={seen:load('md-seen',null)!==null,pv:pv,day:day,demo:!!demo,i:0,res:[],total:demo?2:pv?PREVIEW_N:10,phase:'idle',art:{},pos:[3,3],miss:0,rng:dayRng(day),first:!demo&&!pv&&load(dayKey(day),null)===null};if(G.first){save(dayKey(day),'0');if(day===today())save('md-live-'+day,'1')}if(!demo&&!pv&&!G.first){var at=getAt(day);if(at)resume(at);else save(atKey(day),'null')}if(!demo&&!pv)checkIn('play');gameScr()}
 function pips(){return '<div class="pips" style="grid-template-columns:repeat('+G.total+',1fr)">'+Array.from({length:G.total},function(_,i){var v=G.res[i];return '<i class="'+(v===true?'y':v===false?'n':i===G.i?'c':'')+'"></i>'}).join('')+'</div>'}
 function gameScr(){
  G.r=G.demo?ruleRound(3,'none',false,G.i?['blue','red']:['ink'],pickDirs(2)):roundFor(G.i);
  G.retried=false;G.phase='idle';G.vals=[];G.mk=null;G.col=G.col||'blue';if(!G.demo&&!G.pv)setAt(G.i,G.res);
  var score=G.res.filter(Boolean).length,r=G.r,rl=r.rule&&!r.after;
- $('app').innerHTML='<div class="bar"><b>'+(G.demo?'Demo':G.day===today()?'Miss Direction':'No. '+dayNo(G.day))+'</b><span>Round '+(G.i+1)+' of '+G.total+' · '+G.miss+' of 3 wrong'+(G.pv?' · Preview':G.demo||G.first?'':' · Score locked')+'</span></div>'+pips()+'<p class="q" id="q"></p><div class="tray" id="tray">'+sayBox(sayStart())+'<button class="go full" id="show">Flash '+r.seq.length+' arrows</button></div>';
+ $('app').innerHTML='<div class="bar"><b>'+(G.demo?'Demo':G.pv?'Free preview':G.day===today()?'Miss Direction':'No. '+dayNo(G.day))+'</b><span>Round '+(G.i+1)+' of '+G.total+' · '+G.miss+' of 3 wrong'+(G.pv||G.demo||G.first?'':' · Score locked')+'</span></div>'+pips()+'<p class="q" id="q"></p><div class="tray" id="tray">'+sayBox(sayStart())+'<button class="go full" id="show">Flash '+r.seq.length+' arrows</button></div>';
  $('q').innerHTML='';
  $('show').onclick=flash;
 }
@@ -312,7 +320,7 @@ function check(){
 }
 function again(){G.phase='idle';var r=G.r;$('q').innerHTML=r.rule&&!r.after?'<span class="rule">'+r.rule+'</span>':'Same arrows again';flash()}
 function done(ok){
- G.phase='done';G.res[G.i]=ok;if(!G.demo&&G.i>=2)save('md-seen','1');if(G.first)save(dayKey(G.day),String(G.res.filter(Boolean).length));var pe=document.querySelectorAll('.pips i')[G.i];if(pe)pe.className=ok?'y':'n';
+ G.phase='done';G.res[G.i]=ok;if(!G.demo&&!G.pv&&G.i>=2)save('md-seen','1');if(G.first)save(dayKey(G.day),String(G.res.filter(Boolean).length));var pe=document.querySelectorAll('.pips i')[G.i];if(pe)pe.className=ok?'y':'n';
  if(ok){beep(740,90);later(function(){beep(988,140)},90);$('q').innerHTML='<span class="y">Round cleared</span>'}
  var last=G.i===G.total-1||G.over;
  if(ok&&last&&!G.demo&&!G.pv)save(atKey(G.day),'null');
@@ -327,7 +335,7 @@ function endScr(){
  $('sh').onclick=function(){var w=navigator.clipboard&&navigator.clipboard.writeText?navigator.clipboard.writeText(share):Promise.reject();w.then(function(){toast('Copied. Paste it in a text.')},function(){toast(share.split('\n')[0])})};
 }
 function dayRng(day){var t='md'+day,h=2166136261;for(var i=0;i<t.length;i++){h^=t.charCodeAt(i);h=Math.imul(h,16777619)}return function(){h=h+0x6D2B79F5|0;var x=Math.imul(h^h>>>15,1|h);x=x+Math.imul(x^x>>>7,61|x)^x;return((x^x>>>14)>>>0)/4294967296}}
-startScr();checkIn('open');
+startScr();if(!preview())checkIn('open');
 
 </script>
 
