@@ -13,3 +13,6 @@ Color boxes can sit on the left, right or below (Settings). New players are aske
 
 ## v1.14 (Nov 5)
 Keep playing: after 3 wrong, or after quitting, a player picks up at the round they stopped on with a fresh 3 wrong. The first score stays locked. After clearing round 10, Replay starts over at round 1. Progress is on the device under md-at-(date), and it works for Archive days too.
+
+## v1.15 (Nov 6)
+From Nov 7, rounds with 2 directions can use any two directions, not just an opposite pair, so round 1 has 12 versions instead of 4. Earlier days and the Archive keep their arrows.

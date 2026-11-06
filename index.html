@@ -132,7 +132,7 @@ window.addEventListener('pagehide',function(){smAway=true});
 window.addEventListener('pageshow',function(e){if(e.persisted)smAway=true});
 ['pointerdown','touchend','keydown'].forEach(function(t){document.addEventListener(t,function(){smAwake();var c=getAC();if(c){try{var b=c.createBuffer(1,1,22050),s=c.createBufferSource();s.buffer=b;s.connect(c.destination);s.start(0)}catch(e){}}},{capture:true,passive:true})});
 
-var VER='1.14',VERD='Nov 5';
+var VER='1.15',VERD='Nov 5';
 var $=function(id){return document.getElementById(id)};
 function load(k,d){try{var v=localStorage.getItem(k);return v===null?d:v}catch(e){return d}}
 function save(k,v){try{localStorage.setItem(k,v)}catch(e){}}
@@ -175,7 +175,9 @@ var MORE=[['The Daily 15','DailyGrid/','daily-15'],['A, B, C, Deal','abcdeal/','
 function moreGames(){return '<div class="more"><div class="mh">More smAisle games</div><div class="mrow">'+MORE.map(function(g){return '<a href="https://smaisle.app/'+g[1]+'" title="'+g[0]+'"><img src="https://smaisle.app/daily/icons/'+g[2]+'.png" alt="'+g[0]+'" width="40" height="40" loading="lazy" onerror="this.style.visibility=\'hidden\'"><span>'+g[0]+'</span></a>'}).join('')+'</div></div>'}
 function archive(){var h='',d=dayAdd(today(),-1);while(d>=START){var v=load(dayKey(d),null),l=new Date(d+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'});h+='<button class="arc" data-d="'+d+'"><span>No. '+dayNo(d)+' · '+l+'</span><b>'+(v===null?'Play':v+' of 10')+'</b></button>';d=dayAdd(d,-1)}pop('<h2>Archive</h2><div class="arl">'+h+'</div><button class="sec" id="cl">Close</button>');document.querySelectorAll('.arc').forEach(function(b){b.onclick=function(){closePop();newGame(false,b.dataset.d)}});$('cl').onclick=closePop}
 function seeded(f){var m=Math.random;Math.random=G.rng;try{return f()}finally{Math.random=m}}
-function pickDirs(n,kind){if(n>=4)return DK;var a=shuffle([['U','D'],['L','R']])[0],o=DK.filter(function(d){return a.indexOf(d)<0});return DK.filter(function(d){return a.indexOf(d)>=0||(n===3&&d===o[0])})}
+/* From Nov 7, a 2-direction round can be any two directions, not just an opposite pair. Earlier days keep their arrows. */
+var ANY2='2026-11-07';
+function pickDirs(n,kind){if(n>=4)return DK;if(n===2&&G&&G.day>=ANY2){var two=shuffle(DK).slice(0,2);return DK.filter(function(d){return two.indexOf(d)>=0})}var a=shuffle([['U','D'],['L','R']])[0],o=DK.filter(function(d){return a.indexOf(d)<0});return DK.filter(function(d){return a.indexOf(d)>=0||(n===3&&d===o[0])})}
 function roundFor(i){return seeded(function(){return ruleRound(LENS[i],'none',false,i?shuffle(CK).slice(0,NC[i]).sort(function(a,b){return CK.indexOf(a)-CK.indexOf(b)}):['ink'],pickDirs(ND[i],'none'))})}
 var G=null,TM=[];function later(f,ms){TM.push(setTimeout(f,ms))}function clearT(){TM.forEach(clearTimeout);TM=[]}
 
